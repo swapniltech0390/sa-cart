@@ -1,0 +1,64 @@
+{
+  "name": "sa-cart-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/sa-cart-api/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/sa-cart-api",
+        "main": "apps/sa-cart-api/src/main.ts",
+        "tsConfig": "apps/sa-cart-api/tsconfig.app.json",
+        "assets": ["apps/sa-cart-api/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/sa-cart-api/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "sa-cart-api:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "sa-cart-api:build:development"
+        },
+        "production": {
+          "buildTarget": "sa-cart-api:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/sa-cart-api/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/sa-cart-api/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
