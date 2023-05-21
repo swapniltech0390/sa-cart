@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@sa-cart/angular/home": ["libs/angular/home/src/index.ts"],
       "@sa-cart/nest/core": ["libs/nest/core/src/index.ts"]
     }
   },
