@@ -1,9 +1,12 @@
 import { Float, Query, Resolver } from '@nestjs/graphql';
+import { FetchDataService } from './service/fetch-data/fetch-data.service';
 
 @Resolver()
 export class CoreResolver {
-  @Query(() => Float)
-  uptime() {
-    return process.uptime();
+  constructor(private fetchDataService: FetchDataService){};
+  @Query(() => String)
+ async uptime() {
+    let { data } = await this.fetchDataService.getData().then();
+    return data.message;
   }
 }
