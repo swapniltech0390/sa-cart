@@ -6,8 +6,8 @@ import { User } from '../models/user';
 export class UsersResolver {
   constructor(private usersService: NestUsersService) {}
 
-  @Query(() => [User])
-  getUsers(){
+  @Query(() => [User!], { name: 'users' })
+  getUsers() {
     return this.usersService.getUsers();
   }
 }
