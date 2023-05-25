@@ -1,21 +1,31 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import express from 'express';
-import * as path from 'path';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+import cors from 'cors';
+import helmet from 'helmet';
+import path from 'path';
+import { configuration } from './config/configuration';
+import { userRouter } from './routes/user-route';
 
 const app = express();
+const port = configuration.PORT;
 
-app.use('/assets', express.static(path.join(__dirname, 'assets')));
+// app use
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(compression()); // Compress all routes
+app.use(helmet());
+app.use(express.static(path.join(__dirname, 'public')));
+var corsOptions = {
+  origin: configuration.FRONT_END_HOST, //frontend url
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to sa-cart-api!' });
+app.use('/', userRouter);
+
+app.listen(port, () => {
+  console.log(`Listening at ${port}`);
 });
-
-const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
-  console.log(`Listening at http://localhost:${port}/api`);
-});
-server.on('error', console.error);
