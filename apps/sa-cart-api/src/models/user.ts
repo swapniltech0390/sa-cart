@@ -1,15 +1,16 @@
-import mongoose, { HydratedDocument, Model, Schema, model } from "mongoose";
+import { HydratedDocument, Model, Schema, model } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-const salt = 10;
 import db from "../config/connect";
 import {configuration} from '../config/configuration';
+const salt = 10;
 
-
-interface IUser {
+export interface IUser {
+  _id?:any,
   firstname: string,
   lastname: string,
+  role: string,
   email:string,
   password: string,
   password2: string,
@@ -36,6 +37,11 @@ const schema = new Schema<IUser, UserModel, IUserMethods>({
     type: String,
     required: true,
     maxlength: 100,
+  },
+  role: {
+    type: String,
+    required: true,
+    maxlength: 30,
   },
   email: {
     type: String,

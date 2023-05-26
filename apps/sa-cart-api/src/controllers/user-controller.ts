@@ -1,31 +1,32 @@
-import User from '../models/user';
+import User, { IUser } from '../models/user';
 
 const signUp = async (req,res) =>{
 const newuser = new User(req.body);
 
     if (newuser.password != newuser.password2)
-      return res.status(401).json({ message: 'password not match' });
+      return res.status(401).json({ error: 'password not match' });
 
     try {
       const user = await User.findOne({ email: newuser.email });
 
       if (user)
-        return res.status(409).json({ auth: false, message: 'email exits' });
+        return res.status(409).json({ isAuth: false, error: 'email exits' });
 
-      const doc = await newuser.save();
+      const userProfile: IUser = await newuser.save();
       res.status(201).json({
-        succes: true,
+        isAuth: true,
         user: {
-          id: doc._id,
-          email: doc.email,
-          firstname: doc.firstname,
-          lastname: doc.lastname,
+          id: userProfile._id,
+          email: userProfile.email,
+          firstname: userProfile.firstname,
+          lastname: userProfile.lastname,
+          role: userProfile.role
         },
       });
     } catch (error) {
       if (error) {
         console.log(error);
-        return res.status(400).json({ success: false });
+        return res.status(400).json({error:error});
       }
     }
 }
@@ -35,8 +36,8 @@ const login = async (req, res)  =>{
    const isTokenValid = await User.findByToken(token);
     if (isTokenValid)
         return res.status(406).json({
-          error: true,
-          message: "You are already logged in",
+          isAuth: false,
+          error: "You are already logged in",
         });
       else {
         try {
@@ -46,7 +47,7 @@ const login = async (req, res)  =>{
            if (!userProfile || !isMatch)
             return res.status(401).json({
               isAuth: false,
-              message: "Invalid Credentials",
+              error: "Invalid Credentials",
             });     
 
         userProfile.generateToken();  
@@ -57,10 +58,11 @@ const login = async (req, res)  =>{
                         email: userProfile.email,
                         firstname: userProfile.firstname,
                         lastname: userProfile.lastname,
+                        role: userProfile.role,
                       },
                     });
         } catch (error) {
-           res.status(400).send(error)
+           res.status(400).send({error:error})
         }
       }
 };
@@ -70,16 +72,17 @@ const logout =async (_req,res) => {
     await User.deleteToken();
     res.sendStatus(200);
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400).send({error:error})
   }
 }
 
-const profile =async (req,res) => {
+const profile =async ({user},res) => {
  res.json({
       isAuth: true,
-      id: req.user._id,
-      email: req.user.email,
-      name: req.user.firstname + req.user.lastname,
+      id: user._id,
+      email: user.email,
+      name: `${user.firstname} ${user.lastname}`,
+      role:user.role
   });
 }
 
