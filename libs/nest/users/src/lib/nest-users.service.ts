@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { User } from '../models/user';
 import { createUserArgs } from '../dto/args/create-user.args';
 import { HttpService } from '@nestjs/axios';
-import axios, { AxiosResponse } from 'axios';
 import { LoginArgs } from '../dto/args/login-args';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class NestUsersService {
@@ -18,13 +18,13 @@ export class NestUsersService {
     return this.users;
   };
 
-  signUp(createUserArgs:createUserArgs): Promise<AxiosResponse<any>> {
-    return this.httpService.axiosRef.post<any>(`${this.uri}/signup`,createUserArgs.user);
+  signUp(createUserArgs:createUserArgs): Observable<any> {
+    return this.httpService.post<any>(`${this.uri}/signup`,createUserArgs.user);
   }
-  login(loginArgs:LoginArgs): Promise<AxiosResponse<any>>{
-    return this.httpService.axiosRef.post<any>(`${this.uri}/login`,loginArgs,{withCredentials:true});
+  login(loginArgs:LoginArgs): Observable<any>{
+    return this.httpService.post<any>(`${this.uri}/login`,loginArgs,{withCredentials:true});
   }
-  logout():Promise<AxiosResponse<any>>{
-    return this.httpService.axiosRef.delete<any>(`${this.uri}/logout`,{withCredentials:true});
+  logout():Observable<any>{
+    return this.httpService.delete<any>(`${this.uri}/logout`,{withCredentials:true});
   }
 }
