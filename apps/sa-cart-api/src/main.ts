@@ -14,15 +14,16 @@ const port = configuration.PORT;
 // app use
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cookieParser());
+
 app.use(compression()); // Compress all routes
 app.use(helmet());
 app.use(express.static(path.join(__dirname, 'public')));
 var corsOptions = {
-  origin: configuration.FRONT_END_HOST, //frontend url
-  credentials: true,
+  origin: ["http://localhost:4000"], //frontend url
+  credentials: true
 };
 app.use(cors(corsOptions));
+app.use(cookieParser());
 
 app.use('/', userRouter);
 

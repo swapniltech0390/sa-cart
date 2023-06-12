@@ -5,6 +5,8 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import { AppModule } from './app/app.module';
 import { ConfigService } from '@nestjs/config';
@@ -13,7 +15,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
   const globalPrefix = 'api';
-  app.enableCors();
+
+  app.use(cors({
+    origin: true,
+    credentials: true,
+    exposedHeaders: ["auth"]
+  }));
+  app.use(cookieParser());
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3000;
   await app.listen(port);

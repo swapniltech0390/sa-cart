@@ -33,6 +33,10 @@ const newuser = new User(req.body);
 
 const login = async (req, res)  =>{
   let token = req.cookies.auth;
+    res.setHeader('Access-Control-Allow-Origin','http://localhost:4000')
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, application/json; charset=utf-8')
    const isTokenValid = await User.findByToken(token);
     if (isTokenValid)
         return res.status(406).json({
@@ -70,7 +74,7 @@ const login = async (req, res)  =>{
 const logout =async (_req,res) => {
   try {
     await User.deleteToken();
-    res.sendStatus(200);
+    res.status(200).send('OK');
   } catch (error) {
     res.status(400).send({error:error})
   }

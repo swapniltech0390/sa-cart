@@ -83,6 +83,7 @@ schema.static('deleteToken', async function deleteToken() {
 });
 
 schema.static('findByToken', async function findByToken(token: string) {
+  if(!token) return false;
  const decode = jwt.verify(token, configuration.SECRET);
  return await this.findOne({ _id: decode, token: token })
 });
